@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# First argument chooses which webcam if more are present
+# By default, last /dev/video is used
+[ -z $1 ] && VIDEO_SOURCE=$(ls /dev/video[0,2,4,6,8] | tail -n 1) || VIDEO_SOURCE=/dev/video$1
+
+# Start streaming webcam with mpv
+mpv av://v4l2:$VIDEO_SOURCE --title=Webcam --profile=low-latency --untimed --x11-name=FloatingTerminal &

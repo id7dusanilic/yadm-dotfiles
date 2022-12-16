@@ -1,0 +1,40 @@
+#!/bin/bash
+
+
+# This script displays a selection of config files to edit with
+# a text editor in dmenu
+
+[ -z "${DMENU_COMMAND}" ] && DMENU_COMMAND="dmenu"
+
+options=(
+    "bashrc:$HOME/.bashrc"
+    "vim:$HOME/.vim/vimrc"
+    "nvim:$HOME/.config/nvim/init.vim"
+    "qtile:$HOME/.config/qtile"
+    "bspwm:$HOME/.config/bspwm/bspwmrc"
+    "sxhkd:$HOME/.config/sxhkd/*"
+    "zathura:$HOME/.config/zathura/zathurarc"
+    "ranger:$HOME/.config/ranger/rc.conf"
+    "mpv:$HOME/.config/mpv/input.conf"
+)
+
+for option in "${options[@]}" ; do
+    KEY="${option%%:*}"
+    VALUE="${option##*:}"
+    [ -z "$MENU" ] || MENU="${MENU}\n"
+    [ -z "$VALUE" ] || MENU="${MENU}${KEY}"
+done
+
+NUM_OPTIONS=$(echo -e $MENU | wc -l)
+
+choice="$(echo -e "$MENU" | ${DMENU_COMMAND} -l ${NUM_OPTIONS} -i -p "Choose a config gile to edit")" || exit 1
+
+[ -n ${TERM_EMULATOR} ] && EMULATOR=${TERM_EMULATOR} || EMULATOR=st
+
+for option in "${options[@]}" ; do
+    KEY="${option%%:*}"
+    VALUE="${option##*:}"
+    [ "${KEY}" == "${choice}" ] && ${EMULATOR} -e ${EDITOR} -p ${VALUE} && exit 0
+done
+
+

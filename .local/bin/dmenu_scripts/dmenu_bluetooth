@@ -1,0 +1,155 @@
+#!/bin/bash
+
+[ -z "${DMENU_COMMAND}" ] && DMENU_COMMAND="dmenu"
+
+status_power() {
+    bluetoothctl show | grep -q "Powered: yes" && return 1 || return 0
+}
+
+toggle_power() {
+    status_power
+    [ $? == 1 ] && bluetoothctl power off || bluetoothctl power on
+}
+
+status_scan() {
+    bluetoothctl show | grep -q "Discovering: yes" && return 1 || return 0
+}
+
+toggle_scan() {
+    status_scan
+    if [ $? == 1 ]; then
+        kill $(pgrep -f "bluetoothctl scan on")
+        bluetoothctl scan off
+    else
+        bluetoothctl scan on &
+    fi
+}
+
+status_pairable() {
+    bluetoothctl show | grep -q "Pairable: yes" && return 1 || return 0
+}
+
+toggle_pairable() {
+    status_pairable
+    [ $? == 1 ] && bluetoothctl pairable off || bluetoothctl pairable on
+}
+
+status_discoverable() {
+    bluetoothctl show | grep -q "Discoverable: yes" && return 1 || return 0
+}
+
+toggle_discoverable() {
+    status_discoverable
+    [ $? == 1 ] && bluetoothctl discoverable off || bluetoothctl discoverable on
+}
+
+device_connected() {
+    bluetoothctl info "$1" | grep -q "Connected: yes" && return 1 || return 0
+}
+
+toggle_connection() {
+    device_connected "$1"
+    [ $? == 1 ] && bluetoothctl disconnect "$1" || bluetoothctl connect "$1"
+}
+
+device_paired() {
+    bluetoothctl info "$1" | grep -q "Paired: yes" && return 1 || return 0
+}
+
+device_trusted() {
+    bluetoothctl info "$1" | grep -q "Trusted: yes" && return 1 || return 0
+}
+
+toggle_trust() {
+    device_trusted "$1"
+    [ $? == 1 ] && bluetoothctl untrust "$1" || bluetoothctl trust "$1"
+}
+
+paired () {
+    bluetoothctl paired-devices | grep "Device" | cut -d ' ' -f 3-
+}
+
+available () {
+    bluetoothctl devices | grep "Device" | cut -d ' ' -f 3-
+}
+
+start_menu () {
+    status_power
+    [ $? == 1 ] && power_option="Power: on" || power_option="Power: off" 
+    status_pairable
+    [ $? == 1 ] && pairable_option="Pairable: on" || pairable_option="Pairable: off" 
+    status_scan
+    [ $? == 1 ] && scan_option="Scan: on" || scan_option="Scan: off" 
+    status_discoverable
+    [ $? == 1 ] && disc_option="Discoverable: on" || disc_option="Discoverable: off" 
+    list_dev_opt="List available devices"
+    [ "${power_option}" == "Power: on" ] && \
+        menu="${power_option}\n${pairable_option}\n${scan_option}\n${disc_option}\n${list_dev_opt}" || \
+        menu="${power_option}"
+    choice="$(echo -e "${menu}" | ${DMENU_COMMAND} -l 10 -p "Bluetooth options :")"
+    case "${choice}" in
+        "${power_option}")
+            toggle_power
+            ;;
+        "${pairable_option}")
+            toggle_pairable
+            ;;
+        "${scan_option}")
+            toggle_scan
+            ;;
+        "${disc_option}")
+            toggle_discoverable
+            ;;
+        "${list_dev_opt}")
+            devices_menu
+            ;;
+        *)
+            exit 1
+            ;;
+    esac
+}
+
+devices_menu () {
+    selected_device="$(devices_list | ${DMENU_COMMAND} -l 20 -p "All available devices:")"
+    if [ -n "${selected_device}" ]; then
+        echo "${selected_device}" | grep -q "^(Paired) " && selected_device="${selected_device:9}"
+        selected_mac_address="$(bluetoothctl devices | grep "${selected_device}" | cut -d ' ' -f 2)"
+        device_connected "${selected_mac_address}"
+        [ $? == 1 ] && conn_option="Connected: yes" || conn_option="Connected: no" 
+        device_paired "${selected_mac_address}"
+        [ $? == 1 ] && pair_option="Paired: yes" || pair_option="Paired: no"
+        device_trusted "${selected_mac_address}"
+        [ $? == 1 ] && trust_option="Trusted: yes" || trust_option="Trusted: no"
+        menu="${conn_option}\n${pair_option}\n${trust_option}"
+        choice=$(echo -e "${menu}" | ${DMENU_COMMAND} -l 5 -p "${selected_device} options:")
+        case "${choice}" in
+            "${conn_option}")
+                toggle_connection "${selected_mac_address}"
+                ;;
+            "${pair_option}")
+                echo "Cannot unpair for now"
+                ;;
+            "${trust_option}")
+                toggle_trust "${selected_mac_address}"
+                ;;
+            *)
+                exit 1
+                ;;
+        esac
+    else
+        exit 1
+    fi
+}
+
+devices_list () {
+    tmp_paired="/tmp/paired_devices_tmp"
+    tmp_available="/tmp/available_devices_tmp"
+    paired > ${tmp_paired}
+    available > ${tmp_available}
+    available_devices=$(grep -vf ${tmp_paired} ${tmp_available})
+    cat $tmp_paired | sed 's/^/(Paired) /g'
+    [ -n "${available_devices}" ] && echo -e "${available_devices}"
+    rm ${tmp_paired} ${tmp_available}
+}
+
+start_menu

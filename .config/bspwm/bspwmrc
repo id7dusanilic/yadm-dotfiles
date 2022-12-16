@@ -1,0 +1,57 @@
+#! /bin/bash
+
+# Start polybar
+command -v polybar &> /dev/null && $HOME/.config/polybar/launch.sh
+
+# Auto setup screens
+autorandr
+# Check which profile is loaded
+profile=$(autorandr --current)
+host=$(hostname)
+
+case $profile in
+    full)
+        case $host in
+            xps)
+                bspc monitor DP-2-2 -d 1 2 3 4
+                bspc monitor DP-1-2 -d 5 6 7 8
+                bspc monitor eDP-1 -d 9
+                ;;
+            *)
+                bspc monitor HDMI2 -d 1 2 3 4 5
+                bspc monitor eDP1 -d 6 7 8 9
+                ;;
+        esac
+        ;;
+    dual)
+        case $host in
+            xps)
+                bspc monitor DP-2-2 -d 1 2 3 4 5
+                bspc monitor DP-1-2 -d 6 7 8 9
+                ;;
+            *)
+                bspc monitor HDMI2 -d 1 2 3 4 5
+                bspc monitor eDP1 -d 6 7 8 9
+                ;;
+        esac
+        ;;
+    *)
+        bspc monitor -d 1 2 3 4 5 6 7 8 9
+        ;;
+esac
+
+bspc config border_width        2
+bspc config window_gap          6
+
+bspc config split_ratio         0.55
+bspc config borderless_monocle  true
+bspc config gapless_monocle     true
+
+bspc rule -a Signal desktop='^9'
+
+# Floating windows
+bspc rule -a Pavucontrol state=floating
+bspc rule -a matplotlib state=floating
+bspc rule -a calcurse state=floating
+
+scratchpad init

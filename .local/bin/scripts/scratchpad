@@ -1,0 +1,54 @@
+#!/bin/bash
+
+declare -A scratchpads=(
+    [files]="ranger"
+    [calc]="python3 -q"
+    [bluez]="bluetoothctl"
+)
+
+init_scratchpads() {
+    for name in ${!scratchpads[@]}
+    do
+        bspc rule -a ${name} sticky=on state=floating hidden=on
+        echo "Initialized ${name} scratchpad"
+    done
+}
+
+toggle_scratchpad() {
+    name=${1}
+    cmd=${scratchpads[${name}]}
+
+    [ -z "${cmd}" ] && exit 1
+
+    echo "Toggling ${name} scratchpad"
+    echo "Command is ${cmd}"
+
+    pids=$(xdotool search --class ${name})
+
+    # Check if there are any running windows with given WM_CLASS
+    if [ -z "${pids}" ]
+    then
+        # Create a window
+        st -c ${name} -e ${cmd} &
+        # Wait for the window to spawn
+        sleep 0.5
+        # Get window
+        pid=$(xdotool search --class ${name})
+        # Show node
+        bspc node ${pid} --flag hidden=off -f
+    else
+        for pid in ${pids}; do
+            # Toggle visibility
+            bspc node ${pid} --flag hidden -f
+        done
+    fi
+}
+
+case ${1} in
+    init)
+        init_scratchpads
+        ;;
+    *)
+        toggle_scratchpad ${1}
+        ;;
+esac

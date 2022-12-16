@@ -1,0 +1,4 @@
+#!/bin/bash
+
+mem="$(free -m | awk '/^Mem:/ {print $3 "M/" $2 "M"}')"
+echo -e $mem

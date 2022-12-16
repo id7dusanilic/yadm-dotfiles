@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Note current_lang and previous_lang need to be created and initilised in the
+# autostart.sh script
+
+[ -z "${DMENU_COMMAND}" ] && DMENU_COMMAND="dmenu"
+
+CURRENT_LANG_PATH="$HOME/.local/share/current_lang"
+CURRENT_LANG=$(cat $CURRENT_LANG_PATH)
+PREV_LANG_PATH="$HOME/.local/share/previous_lang"
+
+NEXT_LANG=$(echo -e "us\nrs\npc" | ${DMENU_COMMAND} -p "Choose keyboard layout  :" -l 3) || exit 1
+
+echo $CURRENT_LANG > $PREV_LANG_PATH
+
+case $NEXT_LANG in
+    "rs")
+		setxkbmap -layout rs -variant latin
+        ;;
+    "pc")
+		setxkbmap -layout rs
+        ;;
+    "us")
+		setxkbmap -layout us
+        ;;
+    *)
+        exit
+        ;;
+esac
+echo $NEXT_LANG > $CURRENT_LANG_PATH
+
+# Signal changes to dwmblocks
+kill -36 $(pidof dwmblocks)

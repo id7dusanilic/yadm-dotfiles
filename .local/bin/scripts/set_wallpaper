@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Default wallpaper (link) path
+DEFAULT_WALLPAPER=$HOME/.local/share/wallpaper
+
+# If no arguments sent set default (on X startup)
+[ -z "$1" ] && xwallpaper --zoom "$(readlink -f ${DEFAULT_WALLPAPER})"
+
+# If the argument sent is a file, make it default and change the wallpaper
+[ -f "$1" ] && ln -sf "$(realpath $1)" "${DEFAULT_WALLPAPER}"
+
+xwallpaper --zoom "$(readlink -f ${DEFAULT_WALLPAPER})"

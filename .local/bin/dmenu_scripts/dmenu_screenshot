@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# Author: Dusan Ilic
+# This script is used to capture screenshots using the maim tool.
+
+set -euo pipefail
+
+[ -z "${DMENU_COMMAND}" ] && DMENU_COMMAND="dmenu"
+screenshots_path=$HOME/Pictures/screenshots
+
+# Connected monitors names
+monitors_names=($(xrandr | grep " connected" | cut -d' ' -f 1))
+
+# Creating the dmenu menu
+opt_whole_screen="Whole Screen"
+opt_active_window="Active Window"
+opt_selection="Selection"
+
+create_menu () {
+    printf "%s\n" ${monitors_names[@]}
+    echo ${opt_whole_screen}
+    echo ${opt_active_window}
+    echo ${opt_selection}
+}
+
+num_lines=$(echo -e "$(create_menu)" | wc -l)
+selected_area=$(echo -e "$(create_menu)" | ${DMENU_COMMAND} -i -p "Screenshot Area" -l ${num_lines})
+tmp_name="screenshot_$(date +'%Y_%m_%d_%H_%M_%S').png"
+
+maim_command="maim --hidecursor"
+
+case "${selected_area}" in
+    "${opt_whole_screen}") # Whole screen
+        ${maim_command} "/tmp/${tmp_name}"
+        ;;
+    "${opt_active_window}") # Active window
+        ${maim_command} -i $(xdotool getactivewindow) "/tmp/${tmp_name}"
+        ;;
+    "${opt_selection}") # Selection
+        ${maim_command} --select --bordersize=3 --color=0.5,0,0 "/tmp/${tmp_name}"
+        ;;
+    *) # Selected monitor or invalid
+        monitor_geometry=($(xrandr | grep ${selected_area} | grep -o '[0-9]\+x[0-9]\++[0-9]\++[0-9]\+'))
+        [ -z  ${monitor_geometry} ] && exit 1 # Invalid
+        ${maim_command} --geometry=${monitor_geometry} "/tmp/${tmp_name}"
+        ;;
+esac
+
+# Choose outoput, file or clipboard
+opt_clipboard="Save to clipboard"
+opt_file="Save to file"
+selected_output=$(echo -e "${opt_file}\n${opt_clipboard}" | ${DMENU_COMMAND} -i -p "Select output" -l 2)
+
+[ "${selected_output}" == "${opt_clipboard}" ] && \
+    cat "/tmp/${tmp_name}" | xclip -selection clipboard -t image/png -i && \
+    notify-send -i "/tmp/${tmp_name}" "Screenshot Script" "Copied screenshot to clipboard" && \
+    rm "/tmp/${tmp_name}" && \
+    exit 0
+
+name=$(echo "" | ${DMENU_COMMAND} -p "Enter screenshot name" -l 0)
+[ -z "${name}" ] && name=${tmp_name}
+mkdir -p "${screenshots_path}" && cp "/tmp/${tmp_name}" "${screenshots_path}/${name}" && \
+    notify-send -i "/tmp/${tmp_name}" "Screenshot Script" "Saved ${name} in ${screenshots_path}"
+    rm "/tmp/${tmp_name}" 

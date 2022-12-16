@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Installs a font from a .tar, .tar.gz, or a .zip archive
+
+[ -e $1 ] || echo "File $1 does not exist" || exit 1
+
+echo $1 | grep -q '.tar.gz$' && FILETYPE="tar.gz"
+echo $1 | grep -q '.tar$' && FILETYPE="tar"
+echo $1 | grep -q '.zip$' && FILETYPE="zip"
+[ -z $FILETYPE ] && echo "Unsupported filetype!" && exit 1
+
+TMP_DIR_NAME="/tmp/tmp_font_install"
+case $FILETYPE in
+    "tar.gz")
+        tar -xvzf $1 -C $TMP_DIR_NAME
+        ;;
+    "tar")
+        tar -xvf $1 -C $TMP_DIR_NAME
+        ;;
+    "zip")
+        unzip $1 -d $TMP_DIR_NAME
+        ;;
+esac
+
+sudo mv $TMP_DIR_NAME/* /usr/share/fonts
+fc-cache -f -v
+
+rm -rf $TMP_DIR_NAME

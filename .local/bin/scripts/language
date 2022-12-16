@@ -1,0 +1,5 @@
+#!/bin/bash
+
+CURRENT_LANG=$(keyboard_layout --get)
+
+echo "[ $CURRENT_LANG ]"

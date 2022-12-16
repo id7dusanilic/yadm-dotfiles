@@ -1,0 +1,78 @@
+#!/bin/bash
+
+# Author: Dusan Ilic
+
+# This script is used for controling the keyboard layouts
+# and can be used with a keybinding and for status bars
+
+# Customize the available layouts array to config the script
+
+# Available layouts array.
+# Format: layout_signature <Tab> layout_command.
+
+[ -z "${DMENU_COMMAND}" ] && DMENU_COMMAND="dmenu"
+
+AVAILABLE_LAYOUTS="\
+us	setxkbmap -layout us
+rs	setxkbmap -layout rs -variant latin
+pc	setxkbmap -layout rs"
+
+### Getter functions
+
+# Gets the command for the chosen layout
+get_command () {
+	echo "${AVAILABLE_LAYOUTS}" | grep "^${1}" | cut -f 2
+}
+
+# Lists all layouts from the available layouts array
+get_layouts () {
+	echo "${AVAILABLE_LAYOUTS}" | cut -f 1
+}
+
+### File that stores the array of layouts, with the first line being the current layout
+TMP_FILE="/tmp/keyboard_layouts"
+[ -f ${TMP_FILE} ] || get_layouts > ${TMP_FILE}
+
+### Functions
+
+# Sets the desired layout and updates the file
+set_layout () {
+	`get_command $1`
+	sed -i "/$1/d" ${TMP_FILE}
+	sed -i "1 i $1" ${TMP_FILE}
+}
+
+# Creates a dmenu prompt for choosing a keyboard layout
+dmenu_prompt() {
+	echo -e "$(get_layouts)" | ${DMENU_COMMAND} -p "Choose keyboard layout  :" -l 3
+}
+
+
+### Implementation
+
+# Number of arguments should be 1 or 2
+[[ $# == 1 || $# == 2 ]] || exit 1
+
+# Option is the first argument
+OPTION=${1}
+
+case ${OPTION} in
+	-s|--set)
+		# Set the chosen layout
+		# If non provided spawn a dmenu prompt
+		[ -z ${2} ] && LAYOUT=$(dmenu_prompt) || LAYOUT=${2}
+		set_layout ${LAYOUT}
+		;;
+	-g|--get)
+		# Get the current layout
+		sed -n '1p' ${TMP_FILE}
+		;;
+	-p|--prev)
+		# Switch to previous layout
+		LAYOUT=$(sed -n '2p' ${TMP_FILE})
+		set_layout ${LAYOUT}
+		;;
+	*) # unknown option
+		exit 1
+		;;
+esac

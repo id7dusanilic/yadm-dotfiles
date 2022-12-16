@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Provides you with mounted partitions, select one to unmount.
+# Drives mounted at /, /boot and /home will not be options to unmount.
+
+unmountusb() {
+	[ -z "$drives" ] && exit
+    num_dev=$(echo "$drives" | wc -l)
+	chosen="$(echo "$drives" | ${DMENU_COMMAND} -i -l $num_dev -p "Unmount which drive?")" || exit 1
+	chosen="$(echo "$chosen" | awk '{print $1}')"
+	[ -z "$chosen" ] && exit
+	udisksctl unmount -b "$chosen" && notify-send "Regular unmounting" "$chosen unmounted." || notify-send "Regular unmounting" "Failed - Resource might be busy"
+	}
+
+unmountandroid() { \
+    num_dev=$(awk '/simple-mtpfs/ {print $2}' /etc/mtab | wc -l)
+	chosen="$(awk '/simple-mtpfs/ {print $2}' /etc/mtab | ${DMENU_COMMAND} -l $num_dev -i -p "Unmount which device?")" || exit 1
+	[ -z "$chosen" ] && exit
+    fusermount -u $chosen && notify-send "Android unmounting" "$chosen unmounted." || notify-send "Android unmouting" "Failed unmounting"
+	}
+
+asktype() { \
+	choice="$(printf "Regular\\nAndroid" | ${DMENU_COMMAND} -i -l 2 -p "Unmount a regular drive or Android device?")" || exit 1
+	case "$choice" in
+		Regular) unmountusb ;;
+		Android) unmountandroid ;;
+	esac
+	}
+
+drives=$(lsblk -nrpo "name,type,size,mountpoint" | awk '$4!~/\/boot|\/efi|\/home$|SWAP/&&length($4)>1{printf "%s (%s)\n",$1,$3}')
+
+if ! grep simple-mtpfs /etc/mtab; then
+	[ -z "$drives" ] && echo "No drives to unmount." &&  exit
+	echo "Unmountable USB drive detected."
+	unmountusb
+else
+	if [ -z "$drives" ]
+	then
+		echo "Unmountable Android device detected."
+	       	unmountandroid
+	else
+		echo "Unmountable USB drive(s) and Android device(s) detected."
+		asktype
+	fi
+fi

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# This script takes the text from clipboard and passes it
+# as an argument for a command
+
+[ -z "${DMENU_COMMAND}" ] && DMENU_COMMAND="dmenu"
+
+clip=$(xclip -o)
+
+cmds="\
+mpv		mpv --x11-name=FloatingTerminal $clip
+surf	surf $clip
+other"
+
+choice="$(echo "$cmds" | cut -f 1 | ${DMENU_COMMAND} -l 5 -p "Command:")" || exit 1
+
+if [ $choice == "other" ]; then
+	cmd=$(echo "" | ${DMENU_COMMAND} -p "Custom command:")
+	`echo $cmd $clip`
+else
+	`echo "$cmds" | grep "$choice	" | cut -f 2-`
+fi
+

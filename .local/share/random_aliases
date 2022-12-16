@@ -1,0 +1,9 @@
+# Misc aliases
+alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
+alias ooa='cd ~/Documents/Projects/OOA/'
+alias ec='fzf_editconfig'
+alias gs='git status'
+alias e='$EDITOR'
+alias p='sudo pacman'
+alias eh='e $HISTFILE'
+alias ccat='highlight --out-format=ansi'    # Colored cat with syntax highlight

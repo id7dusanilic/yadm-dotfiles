@@ -1,0 +1,17 @@
+#!/bin/bash
+
+status=$(cat /sys/class/power_supply/BAT*/status)
+capacity=$(cat /sys/class/power_supply/BAT*/capacity)
+
+
+if [ "$status" = "Discharging" ]; then
+    text="BAT"
+    if [ $capacity -lt 10 ]; then
+        notify-send -h 'string:fgcolor:#ffffff' -h 'string:frcolor:#ff0000' -h 'string:bgcolor:#770000' \
+            "Battery Extremly Low" "Plug in the AC adapter"
+    fi
+else
+    text="CHR"
+fi
+
+echo -e "${text}: ${capacity}%"

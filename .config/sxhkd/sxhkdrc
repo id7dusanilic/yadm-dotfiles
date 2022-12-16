@@ -1,0 +1,98 @@
+# Open web browser
+super + w
+    $BROWSER
+
+# Open file manager
+super + r
+    $TERM_EMULATOR -e ranger
+
+# One click terminal
+Menu
+    $TERM_EMULATOR
+
+# Open calendar (calcurse)
+super + c
+    $TERM_EMULATOR -e calcurse
+
+# Switch to previuos keyboard layout
+super + space
+    keyboard_layout --prev && sigdwmblocks 2
+
+# Choose a keyboard layout
+super + control + space
+    keyboard_layout --set && sigdwmblocks 2
+
+# System options
+super + shift +q
+    dmenu_system
+
+# Pipe clipboard to a program
+super + shift + backslash
+    dmenu_clipboard_run
+
+# Take a screenshot
+Print
+    dmenu_screenshot
+
+# Wifi options
+super + F1
+    dmenu_wifi
+
+# Edit common config files
+super + F2
+    dmenu_editconfig
+
+# Passmenu
+super + F3
+    passmenu
+
+# Rofi window switch
+alt + Tab
+    rofi -show window
+
+# Edit scripts
+super + F4
+    $TERM_EMULATOR -e fzf_editscripts
+
+# Kill a process with dmenu
+super + F9
+    dmenu_kill
+
+# Start dmenu_run with history
+#super + shift + p
+#   dmenu_run_history
+
+# Rofi drun
+super + shift + p
+    rofi -show drun
+
+# Mount a drive
+super + F12
+    dmenu_mount
+
+# Unmount a drive
+super + F11
+    dmenu_unmount
+
+# Audio control
+XF86AudioMute
+    pamixer -t
+
+super + alt + m
+    pamixer -t
+
+XF86Audio{Raise,Lower}Volume
+    pamixer --allow-boost {-i,-d} 5
+
+super + alt + {k,j}
+    pamixer --allow-boost {-i,-d} 5
+
+super + alt + v
+    pavucontrol
+
+# Backlight control
+XF86MonBrightness{Up,Down}
+    xbacklight -{inc,dec} 10
+
+XF86Calculator
+    $TERM_EMULATOR -e python3 -q

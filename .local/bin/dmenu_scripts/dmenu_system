@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# A dmenu wrapper script for system functions.
+
+[ -z "${DMENU_COMMAND}" ] && DMENU_COMMAND="dmenu"
+
+case ${WM} in
+    qtile)
+        LEAVE="qtile cmd-obj -o cmd -f shutdown"
+        RENEW="qtile cmd-obj -o cmd -f restart"
+        ;;
+    bspwm)
+        LEAVE="bspc quit"
+        RENEW="bspc wm -r"
+        ;;
+    *)
+        exit 1
+        ;;
+esac
+
+command -v systemctl &> /dev/null && CTL=systemctl || CTL=loginctl
+
+options=(
+    " lock:slock"
+    " leave:${LEAVE}"
+    " renew:${RENEW}"
+    "鈴 suspend:${CTL} suspend"
+    "鈴 hibernate:${CTL} hibernate"
+    "勒 reboot:${CTL} reboot"
+    " shutdown:${CTL} poweroff"
+)
+
+for option in "${options[@]}" ; do
+    KEY="${option%%:*}"
+    VALUE="${option##*:}"
+    [ -z "$MENU" ] || MENU="${MENU}\n"
+    [ -z "$VALUE" ] || MENU="${MENU}${KEY}"
+done
+
+NUM_OPTIONS=$(echo -e $MENU | wc -l)
+
+choice="$(echo -e "$MENU" | ${DMENU_COMMAND} -l ${NUM_OPTIONS} -i -p "System options")" || exit 1
+
+for option in "${options[@]}" ; do
+    KEY="${option%%:*}"
+    VALUE="${option##*:}"
+    [ "${KEY}" == "${choice}" ] && `${VALUE}` && exit 0
+done

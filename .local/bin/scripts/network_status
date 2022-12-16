@@ -1,0 +1,19 @@
+#!/bin/bash
+
+process_connection() {
+    ip_addr=$(nmcli connection show "${1}" | grep "IP4.ADDRESS" | tr -d ' ' | tr '/' ':' | cut -f2 -d':')
+    conn_type=$(nmcli -f connection connection show "${1}" | grep "connection.type" | tr -d ' ' | cut -f2 -d':')
+    quality=$(cat /proc/net/wireless | sed -n '1,2!p' | sed 's/[[:space:]]\+/   /g' | cut -f 3 | sed 's/.$//g')
+
+    [ "${conn_type}" == "802-11-wireless" ] && icon=""
+    [ "${conn_type}" == "tun" ] && icon="ﱾ"
+    [ "${conn_type}" == "vpn" ] && icon="ﱾ"
+
+    printf "${icon}  ${ip_addr%/*} \n"
+}
+
+connections=$(nmcli -f name connection show --active | sed -n '1!p' | awk '{$1=$1};1')
+
+while IFS= read -r connection; do
+    process_connection "${connection}"
+done <<< "${connections}"
