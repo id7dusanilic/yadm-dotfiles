@@ -7,6 +7,8 @@ Plug 'vim-python/python-syntax'
 Plug 'kovetskiy/sxhkd-vim'
 Plug 'ggandor/leap.nvim'
 Plug 'sainnhe/edge'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'davidhalter/jedi-vim'
 call plug#end()
 
 " Autocmds ********************************************************************
