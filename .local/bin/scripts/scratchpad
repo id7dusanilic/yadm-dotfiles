@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Supporting only st and xterm for now
+SCRATCHPAD_TERMINAL=xterm
+
 declare -A scratchpads=(
     [files]="ranger"
     [calc]="python3 -q"
@@ -29,7 +32,14 @@ toggle_scratchpad() {
     if [ -z "${pids}" ]
     then
         # Create a window
-        st -c ${name} -e ${cmd} &
+        case ${SCRATCHPAD_TERMINAL} in
+            st)
+                st -c ${name} -g 200x50 -e ${cmd} &
+                ;;
+            *)
+                xterm -class ${name} -geometry 200x50 -e ${cmd} &
+                ;;
+        esac
         # Wait for the window to spawn
         sleep 0.5
         # Get window
