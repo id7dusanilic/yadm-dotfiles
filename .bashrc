@@ -56,9 +56,6 @@ shopt -s autocd
 # Setup environment
 [ -f $HOME/.local/share/setup_env.sh ] && source $HOME/.local/share/setup_env.sh
 
-# Default terminal emulator, to be used by other scripts
-export TERM_EMULATOR=/usr/local/bin/st
-
 # History settings
 shopt -s cmdhist                # multiple commands on one line show up as a single line
 shopt -s histappend             # Enable history appending instead of overwriting
