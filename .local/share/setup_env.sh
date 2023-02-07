@@ -36,3 +36,4 @@ export HISTFILE="$XDG_DATA_HOME/bash/history"
 [ -d ${JUPYTER_CONFIG_DIR} ] || mkdir -p ${JUPYTER_CONFIG_DIR}
 [ -d ${XDG_DATA_HOME}/bash ] || mkdir -p ${XDG_DATA_HOME}/bash
 
+touch ${WGETRC}
