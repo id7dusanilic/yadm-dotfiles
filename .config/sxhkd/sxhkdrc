@@ -23,7 +23,7 @@ super + control + space
     keyboard_layout --set && sigdwmblocks 2
 
 # System options
-super + shift +q
+super + shift + q
     dmenu_system
 
 # Pipe clipboard to a program
