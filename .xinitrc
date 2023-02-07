@@ -13,16 +13,6 @@ numlockx on
 # Read Xresources
 xrdb $HOME/.config/X11/Xresources
 
-# Setup keybindings
-case $WM in
-    bspwm)
-        pgrep -x sxhkd > /dev/null || sxhkd -m 1 $HOME/.config/sxhkd/bspwmrc &
-        ;;
-    *)
-        pgrep -x sxhkd > /dev/null || sxhkd -m 1 &
-        ;;
-esac
-
 # Initialize keyboard layout
 keyboard_layout --set us
 
@@ -39,6 +29,16 @@ xsetroot -cursor_name left_ptr
 
 # Set background
 set_wallpaper
+
+# Setup keybindings
+case $WM in
+    bspwm)
+        pgrep -x sxhkd > /dev/null || sxhkd -m 1 $HOME/.config/sxhkd/bspwmrc &
+        ;;
+    *)
+        pgrep -x sxhkd > /dev/null || sxhkd -m 1 &
+        ;;
+esac
 
 # Start window manager
 case $WM in
