@@ -1,4 +1,6 @@
-import subprocess
+import psutil
+import socket
+
 from libqtile import bar
 from libqtile.widget import base
 
@@ -31,8 +33,11 @@ class IPAddress(base.ThreadPoolText):
             return ""
 
     def get_ipaddr(self):
-        return subprocess.check_output(
-                f"ifconfig | grep {self.interface} -A 1 | grep 'inet ' | awk '{{print $2}}'",
-                shell=True,
-                encoding='utf8',
-                )[:-1]
+        ifaces = psutil.net_if_addrs()
+        if self.interface in ifaces:
+            if socket.AF_INET in [snicaddr.family for snicaddr in ifaces[self.interface]]:
+                return ifaces[self.interface][0].address
+            else:
+                return ""
+        else:
+            return ""

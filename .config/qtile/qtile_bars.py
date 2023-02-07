@@ -8,6 +8,11 @@ from ipaddress_widget import IPAddress
 from custom_volume_widget import CustomVolume
 
 import subprocess
+import psutil
+
+interfaces = list(psutil.net_if_addrs().keys())
+interfaces.remove('lo')
+
 
 ### Shared monitors
 battery_monitor = \
@@ -123,9 +128,10 @@ def status_elements():
             format = '{temp}.0°C',
             update_interval = 1,
         ),
-        IPAddress(
+        *[IPAddress(
+            interface = iface,
             padding = 5,
-        ),
+        ) for iface in interfaces],
         widget.Wlan(
             interface='wlan0',
             disconnected_message = '[ WIFI: Disconnected ]',
