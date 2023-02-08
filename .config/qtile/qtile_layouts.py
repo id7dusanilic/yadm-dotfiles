@@ -10,16 +10,16 @@ single_margin = 6
 shared_config = {
     'border_width': 3,
     'margin': margin,
-    'border_focus': colors[0],
-    'border_normal': '#282828',
+    'border_focus': colors.accent,
+    'border_normal': colors.nonaccent,
 }
 
 layouts = [
     # Columns layout
     layout.Columns(
         margin_on_single=single_margin,
-        border_focus_stack=colors[0],
-        border_normal_stack='#282828',
+        border_focus_stack=colors.accent,
+        border_normal_stack=colors.nonaccent,
         **shared_config
     ),
     # Monad Tall layout

@@ -2,7 +2,7 @@
 # Dusan Ilic 2021
 
 from libqtile import bar, widget, qtile
-from qtile_colors import *
+from qtile_colors import colors
 from ipaddress_widget import IPAddress
 from custom_volume_widget import CustomVolume
 
@@ -49,15 +49,15 @@ calendar = \
 def basic_elements():
     tmp = [
         widget.GroupBox(
-            active=colors[3],
-            inactive=colors[2],
-            block_highlight_text_color=colors[3],
+            active=colors.bar_fg,
+            inactive=colors.nonaccent,
+            block_highlight_text_color=colors.bar_fg,
             disable_drag=True,
             highlight_method='block',
-            this_screen_border=colors[0],
-            this_current_screen_border=colors[0],
-            other_current_screen_border=colors[1],
-            other_screen_border=colors[1],
+            this_screen_border=colors.accent_light,
+            this_current_screen_border=colors.accent,
+            other_current_screen_border=colors.nonaccent,
+            other_screen_border=colors.nonaccent,
             padding=5,
             border=0,
             hide_unused=True,
@@ -68,15 +68,15 @@ def basic_elements():
         widget.CurrentScreen(
             active_text='',
             inactive_text=' ',
-            active_color=colors[0],
+            active_color=colors.accent,
         ),
         widget.TaskList(
             highlight_method='block',
             icon_size=0,
-            border=colors[0],
+            border=colors.accent,
             padding_y=0,
             rounded=False,
-            unfocused_border='#444444',
+            unfocused_border=colors.nonaccent,
             title_width_method='uniform'
         ),
         widget.Spacer(),
@@ -89,15 +89,15 @@ def basic_elements():
 def status_elements():
     tmp = [
         widget.GroupBox(
-            active=colors[3],
-            inactive=colors[2],
-            block_highlight_text_color=colors[3],
+            active=colors.bar_fg,
+            inactive=colors.nonaccent,
+            block_highlight_text_color=colors.bar_fg,
             disable_drag=True,
             highlight_method='block',
-            this_screen_border=colors[0],
-            this_current_screen_border=colors[0],
-            other_current_screen_border=colors[1],
-            other_screen_border=colors[1],
+            this_screen_border=colors.accent_light,
+            this_current_screen_border=colors.accent,
+            other_current_screen_border=colors.nonaccent,
+            other_screen_border=colors.nonaccent,
             padding=5,
             border=0,
             hide_unused=True,
@@ -108,15 +108,15 @@ def status_elements():
         widget.CurrentScreen(
             active_text='',
             inactive_text=' ',
-            active_color=colors[0],
+            active_color=colors.accent,
         ),
         widget.TaskList(
             highlight_method='block',
             icon_size=0,
-            border=colors[0],
+            border=colors.accent,
             padding_y=0,
             rounded=False,
-            unfocused_border='#444444',
+            unfocused_border=colors.nonaccent,
             title_width_method='uniform'
         ),
         widget.Spacer(),
@@ -172,7 +172,7 @@ def sec_bar():
     tmp_bar = bar.Bar(
         basic_elements(),
         size=24,
-        background=color_dark_gray,
+        background=colors.bar_bg,
         opacity=1,
     )
     return tmp_bar
@@ -184,7 +184,7 @@ def main_bar():
     tmp_bar = bar.Bar(
         tmp,
         size=24,
-        background=color_dark_gray,
+        background=colors.bar_bg,
         opacity=1,
     )
     return tmp_bar
