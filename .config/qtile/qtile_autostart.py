@@ -13,4 +13,4 @@ from libqtile import hook
 def autostart():
     import os
     # Set wallpaper
-    os.system("set_wallpaper")
+    os.system('set_wallpaper')

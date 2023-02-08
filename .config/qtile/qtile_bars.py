@@ -71,13 +71,13 @@ def basic_elements():
             active_color=colors[0],
         ),
         widget.TaskList(
-            highlight_method="block",
+            highlight_method='block',
             icon_size=0,
             border=colors[0],
             padding_y=0,
             rounded=False,
-            unfocused_border="#444444",
-            title_width_method="uniform"
+            unfocused_border='#444444',
+            title_width_method='uniform'
         ),
         widget.Spacer(),
         calendar,
@@ -111,13 +111,13 @@ def status_elements():
             active_color=colors[0],
         ),
         widget.TaskList(
-            highlight_method="block",
+            highlight_method='block',
             icon_size=0,
             border=colors[0],
             padding_y=0,
             rounded=False,
-            unfocused_border="#444444",
-            title_width_method="uniform"
+            unfocused_border='#444444',
+            title_width_method='uniform'
         ),
         widget.Spacer(),
         widget.CPU(
@@ -159,9 +159,9 @@ def status_elements():
         calendar,
         clock,
         widget.Image(
-            filename="~/.config/qtile/clarity-shutdown-icon.svg",
+            filename='~/.config/qtile/clarity-shutdown-icon.svg',
             margin=5,
-            mouse_callbacks={"Button1": lambda: qtile.cmd_spawn("dmenu_system")}
+            mouse_callbacks={'Button1': lambda: qtile.cmd_spawn('dmenu_system')}
         ),
     ]
     return tmp

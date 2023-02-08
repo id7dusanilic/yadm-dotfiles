@@ -8,10 +8,10 @@ margin = 6
 single_margin = 6
 
 shared_config = {
-    "border_width": 3,
-    "margin": margin,
-    "border_focus": colors[0],
-    "border_normal": "#282828",
+    'border_width': 3,
+    'margin': margin,
+    'border_focus': colors[0],
+    'border_normal': '#282828',
 }
 
 layouts = [
