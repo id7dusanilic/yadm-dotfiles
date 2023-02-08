@@ -19,6 +19,8 @@ from qtile_groups import groups
 # Define layouts
 from qtile_layouts import layouts
 
+from qtile_bars import main_bar, sec_bar
+
 widget_defaults = dict(
     font='Mononoki Nerd Font',
     fontsize=13,
@@ -26,15 +28,10 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
-from qtile_bars import main_bar, sec_bar
-
 screens = [
-    Screen(
-        bottom = main_bar(),
-    ),
-    Screen(
-        bottom = sec_bar(),
-        ),
+    Screen(bottom=main_bar(),),
+    Screen(bottom=sec_bar(),),
+    Screen(bottom=sec_bar(),),
 ]
 
 # Drag floating layouts.
@@ -44,7 +41,7 @@ mouse = [
          start=lazy.window.get_position()),
     Drag([mod], "Button3", lazy.window.set_size_floating(),
          start=lazy.window.get_size()),
-    # Click([mod], "Button2", lazy.window.bring_to_front())
+    Click([mod], "Button2", lazy.window.bring_to_front())
 ]
 
 dgroups_key_binder = None

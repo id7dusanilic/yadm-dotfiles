@@ -16,12 +16,14 @@ groups = [
     Group("7"),
     Group("8"),
     Group("9"),
-    ScratchPad("scratchpad",
-                [DropDown("ranger_scratchpad",
-                 "st -e ranger",
-                 height=0.6,
-                 width=0.9,
-                 x=0.05,
-                 y=0,
-                 on_focus_lost_hide=True,)]),
+    ScratchPad(
+        "scratchpad",
+        [DropDown(
+            "ranger_scratchpad",
+            "xterm -e ranger",
+            height=0.6,
+            width=0.9,
+            x=0.05,
+            y=0,
+            on_focus_lost_hide=True,)]),
 ]

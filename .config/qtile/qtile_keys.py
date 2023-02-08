@@ -23,14 +23,14 @@ keys = [
 
     # Move windows between left/right columns or move up/down in current stack.
     # Moving out of range in Columns layout will create new column.
-    Key([mod, "shift"], "h", lazy.layout.shuffle_left(),desc="Move window to the left"),
+    Key([mod, "shift"], "h", lazy.layout.shuffle_left(), desc="Move window to the left"),
     Key([mod, "shift"], "l", lazy.layout.shuffle_right(), desc="Move window to the right"),
     Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
     Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
 
     # Grow windows. If current window is on the edge of screen and direction
     # will be to screen edge - window would shrink.
-    Key([mod, "control"], "h", lazy.layout.shrink_main(), lazy.layout.grow_left() , desc="Grow window to the left (Columns), Shrink master (Monad)"),
+    Key([mod, "control"], "h", lazy.layout.shrink_main(), lazy.layout.grow_left(), desc="Grow window to the left (Columns), Shrink master (Monad)"),
     Key([mod, "control"], "l", lazy.layout.grow_main(), lazy.layout.grow_right(), desc="Grow window to the right (Columns), Grow maser (Monad)"),
     Key([mod, "control"], "j", lazy.layout.grow_down(), lazy.layout.shrink(), desc="Grow window down (Columns), shrink secondary (Monad)"),
     Key([mod, "control"], "k", lazy.layout.grow_up(), lazy.layout.grow(), desc="Grow window up (Columns), grow secondary (Monad)"),
@@ -74,6 +74,9 @@ keys = [
 
     # Toggle ranger scratchpad
     Key([mod], 's', lazy.group['scratchpad'].dropdown_toggle('ranger_scratchpad')),
+
+    # Toggle ssh scratchpad
+    Key([mod, "shift"], 's', lazy.group['scratchpad'].dropdown_toggle('ssh_scratchpad')),
 ]
 
 for index, g in enumerate(groups):
@@ -86,4 +89,4 @@ for index, g in enumerate(groups):
                 # Move current window to group
                 Key([mod, "shift"], str(index + 1), lazy.window.togroup(g.name), desc=f"Move focused window to group {g.name}")
             ]
-    )
+        )
