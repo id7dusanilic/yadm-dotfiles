@@ -10,6 +10,13 @@ Plug 'sainnhe/edge'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
+let g:coc_global_extensions = [
+    \ 'coc-sh',
+    \ 'coc-pyright',
+    \ 'coc-json',
+    \ 'coc-pairs',
+    \ ]
+
 " Autocmds ********************************************************************
 
 " Update keyboard bindings when sxhkdrc is updated
