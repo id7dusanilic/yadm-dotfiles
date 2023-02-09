@@ -35,13 +35,6 @@ alias l.='ls -ld .*'            # list hidden files in long format
 alias ll='ls -l '               # list in long format
 alias la='ls -la'               # list all files in long format
 
-# Misc aliases
-alias gs='git status'
-alias e='nvim'
-alias eh="e $HISTFILE"
-alias p="sudo pacman"
-alias r="ranger"
-
 # Allow root X Server access
 xhost +local:root > /dev/null 2>&1
 

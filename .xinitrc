@@ -21,9 +21,6 @@ autorandr --change --default mobile
 # Start Network Manager applet
 command -v nm-applet &> /dev/null && nm-applet &
 
-# Setup environment
-[ -f $HOME/.local/share/setup_env.sh ] && source $HOME/.local/share/setup_env.sh
-
 # Setup cursor
 xsetroot -cursor_name left_ptr
 

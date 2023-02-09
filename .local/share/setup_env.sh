@@ -37,3 +37,5 @@ export HISTFILE="$XDG_DATA_HOME/bash/history"
 [ -d ${XDG_DATA_HOME}/bash ] || mkdir -p ${XDG_DATA_HOME}/bash
 
 touch ${WGETRC}
+
+[ -f $HOME/.local/share/random_aliases ] && . /home/dusan/.local/share/random_aliases
