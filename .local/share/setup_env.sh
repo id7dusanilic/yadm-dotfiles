@@ -38,4 +38,4 @@ export HISTFILE="$XDG_DATA_HOME/bash/history"
 
 touch ${WGETRC}
 
-[ -f $HOME/.local/share/random_aliases ] && . /home/dusan/.local/share/random_aliases
+[ -f ${HOME}/.local/share/random_aliases ] && . ${HOME}/.local/share/random_aliases
